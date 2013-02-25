@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="${swc.name}"
+		 basedir="."
+		 default="lib">
+
+	<!-- Define variables/paths used in this build script -->
+	<property file="build.properties"/>
+
+	<taskdef resource="flexTasks.tasks"
+			 classpath="${sdk.ant}/flexTasks.jar"/>
+
+	<!-- Have you edited the properties file to make sure the paths are right on your system? -->
+	<target name="properties">
+
+        <fail unless="asdoc.exe">The "asdoc.exe" property must be set in build.properties.</fail>
+
+		<fail unless="compc.exe">The "compc.exe" property must be set in build.properties.</fail>
+
+		<fail unless="mxmlc.exe">The "mxmlc.exe" property must be set in build.properties.</fail>
+	</target>
+
+    <target name="clean">
+        <delete>
+            <fileset dir="${bin.dir}" includes="${swc.name}.swc"/>
+        </delete>
+    </target>
+
+	<!-- Compile all of the classes under the "src" tree into a .swc file -->
+    <target name="lib" depends="properties">
+        <compc output="${bin.dir}/${swc.name}.swc"
+            include-classes="displayx.align displayx.alignTest displayx.fit displayx.layout displayx.layoutTest displayx.text">
+            <source-path path-element="${src.dir}"/>
+        </compc>
+    </target>
+    <target name="test" depends="lib">
+        <mxmlc file="src/DisplayxRunner.as" debug="true" output="${bin.dir}/test.swf">
+            <source-path path-element="test"/>
+            <compiler.library-path dir="${lib.dir}" append="true">
+                <include name="asunit4/AsUnit-4.2.2.pre.swc"/>
+            </compiler.library-path>
+            <compiler.library-path dir="${bin.dir}" append="true">
+                <include name="displayx.swc" />
+            </compiler.library-path>
+        </mxmlc>
+        <exec executable="flashplayer">
+            <arg value="bin/test.swf"/>
+        </exec>
+    </target>
+</project>
