@@ -87,7 +87,7 @@ package displayx{
 
                     if(paramsType == "align"){
                         var invkey : String = inverseParam(key);
-                        trace("key: ", key, "invkey", invkey);
+                        //trace("key: ", key, "invkey", invkey);
                         if(invkey != key) {
                             outerParams[invkey] = -tmp[key];
                             delete outerParams[key];
